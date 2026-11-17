@@ -1,0 +1,30 @@
+# Local observability stack receiving the traces, metrics and logs of `atoti-sample`.
+#
+#   docker compose up -d
+#
+# `grafana/otel-lgtm` bundles an OpenTelemetry Collector, Prometheus (metrics), Loki (logs), Tempo (traces),
+# Pyroscope (profiles) and Grafana, with the datasources and the Drilldown apps already configured.
+#
+# - Grafana:                   http://localhost:3000 (anonymous admin, local use only)
+# - OTLP endpoint (HTTP/gRPC): http://localhost:4318 / localhost:4317
+# - Prometheus:                http://localhost:9091 (9090 is left to the Atoti session)
+
+name: atoti-observability
+
+services:
+  lgtm:
+    image: grafana/otel-lgtm:0.13.0
+    ports:
+      - "3000:3000" # Grafana
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP
+      - "9091:9090" # Prometheus
+    volumes:
+      - lgtm-data:/data
+      # Extra dashboard, next to the RED and JVM ones shipped with the image.
+      - ./observability/dashboards.yaml:/otel-lgtm/grafana/conf/provisioning/dashboards/atoti-sample.yaml:ro
+      - ./observability/atoti-sample-dashboard.json:/otel-lgtm/atoti-sample-dashboard.json:ro
+    restart: unless-stopped
+
+volumes:
+  lgtm-data:
