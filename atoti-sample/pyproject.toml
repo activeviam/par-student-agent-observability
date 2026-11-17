@@ -1,0 +1,28 @@
+[project]
+name = "atoti-sample"
+version = "0.1.0"
+description = "Atoti tutorial data model with OpenTelemetry observability and Atoti Intelligence on Amazon Bedrock"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "atoti[ai-amazon-bedrock,observability]==6.2.3",
+    "opentelemetry-exporter-otlp-proto-http>=1.45.2",
+    "opentelemetry-instrumentation-logging>=0.66b2",
+    "opentelemetry-sdk>=1.45.2",
+]
+
+[project.scripts]
+atoti-sample = "atoti_sample:main"
+
+[build-system]
+requires = ["uv_build>=0.13.8,<0.14.0"]
+build-backend = "uv_build"
+
+# Atoti packages come from ActiveViam's repository rather than public PyPI.
+# See https://docs.activeviam.com/engine/python-sdk/6.2/getting_started/installation#activeviam-repository
+[[tool.uv.index]]
+name = "activeviam"
+url = "https://activeviam.jfrog.io/artifactory/api/pypi/pypi/simple/"
+# Anonymous access only serves Atoti packages: the other ones answer 401 and are then looked up on PyPI.
+# Since uv uses the first index providing a package, `atoti*` packages can never come from PyPI.
+ignore-error-codes = [401]
