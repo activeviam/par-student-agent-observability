@@ -11,7 +11,7 @@ with:
 ## Run
 
 ```bash
-# From the root of the repository: Grafana, Prometheus, Loki, Tempo and the OpenTelemetry Collector.
+# From the root of the repository: Grafana, Prometheus, Loki, Tempo and an OpenTelemetry Collector in one container.
 docker compose up -d
 
 cd atoti-sample
