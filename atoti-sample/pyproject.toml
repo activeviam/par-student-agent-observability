@@ -18,11 +18,20 @@ atoti-sample = "atoti_sample:main"
 requires = ["uv_build>=0.13.8,<0.14.0"]
 build-backend = "uv_build"
 
-# Atoti packages come from ActiveViam's repository rather than public PyPI.
+# PyPI is the default index; ActiveViam's repository is an extra index for the Atoti wheels.
 # See https://docs.activeviam.com/engine/python-sdk/6.2/getting_started/installation#activeviam-repository
+#
+# Like pip's `--extra-index-url`, uv looks a package up in the extra index before the default one and keeps the
+# first index that has it (https://docs.astral.sh/uv/concepts/indexes/#searching-across-multiple-indexes):
+# `atoti*` packages (direct and transitive) come from ActiveViam's repository, everything else from PyPI.
 [[tool.uv.index]]
 name = "activeviam"
 url = "https://activeviam.jfrog.io/artifactory/api/pypi/pypi/simple/"
-# Anonymous access only serves Atoti packages: the other ones answer 401 and are then looked up on PyPI.
-# Since uv uses the first index providing a package, `atoti*` packages can never come from PyPI.
+# The repository answers 401 (instead of 404) for packages it does not serve, such as pandas:
+# uv then moves on to PyPI instead of failing.
 ignore-error-codes = [401]
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+default = true

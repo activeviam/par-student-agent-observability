@@ -35,9 +35,9 @@ uv run --env-file .env atoti-sample
 
 ## Notes
 
-- **Package source**: `pyproject.toml` declares ActiveViam's repository as the first uv index, so every `atoti*` package
-  is resolved from it and never from PyPI. That repository serves only ActiveViam packages anonymously (it answers `401`
-  for the others), so third-party dependencies (pandas, OpenTelemetry...) still come from PyPI.
+- **Package source**: PyPI is the default uv index and ActiveViam's repository an extra index. uv checks the extra
+  index first, so the `atoti*` wheels (direct and transitive) come from ActiveViam's repository and everything else
+  (pandas, OpenTelemetry, jdk4py...) from PyPI. See the comments in `pyproject.toml`.
 - **Telemetry services**: `atoti-sample` (Python) and `atoti-sample-server` (Java server, instrumented by the
   OpenTelemetry Java agent that `atoti_observability` adds). Both share the same traces: a `Cube.query` span from
   Python contains the server spans of the MDX query.
